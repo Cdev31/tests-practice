@@ -1,26 +1,37 @@
-import { render } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { FirstApp } from "../src/FirstApp";
 
 
 
 describe('Pruebas en <FirstApp />', () => {
 
+    const title = "Hola soy vegeta"
+    const subTitle = "Soy un subtitulo"
+
     test(' debe de hacer match con el snapshot', ()=>{
 
-        const { container } = render( <FirstApp/> )
+        const { container } = render( <FirstApp title={title}/> )
 
         expect( container ).toMatchSnapshot( );
     })
 
     test('Debe mostrar un titulo', () => {
-        const title = "Hola soy vegeta"
-        const { container, getByText } = render( <FirstApp title={title} /> )
 
-        expect( getByText(title) ).toBeTruthy()
+        render( <FirstApp title={title} /> )
 
-        const h2 = container.querySelector('h1')
+        expect( screen.getByText(title) ).toBeTruthy()
 
-        expect( h2.innerHTML).toContain( title)
+        expect( screen.getByTestId('test-title').innerHTML ).toContain( title )
+
+    });
+
+    test('Debe de mostrar el subtitulo enviado por props', () => {
+
+        render( <FirstApp title={title} subTitle={subTitle} /> )
+
+        expect( screen.getByRole('heading', { level: 1 }).innerHTML ).toContain(title)
+
+        expect( screen.getAllByText( subTitle ).length ).toBe( 2 )
 
     });
 
